@@ -15,16 +15,22 @@ var channel = connection.CreateModel(); //Yeni bir kanal oluşturduk.
 //dördüncü parametre autodelete bu parametrenin yaptığı işlem ise bu kuyruğa bağlı olan son subscriber da kuyruğa bağlantısını kapatırsa bu kuyruk otomatik olarak silinir.
 channel.QueueDeclare("hello-queue", true, false, false);
 
-string message = "hello world";
+//Foreach ile bir kerede 50 tane mesaj göndericez.
+Enumerable.Range(1, 50).ToList().ForEach(x =>
+{
+    string message = $"Message {x}";
 
-var messageBody = Encoding.UTF8.GetBytes(message); //Rabbitmq da mesajlar byte olarak gönderilir.
+    var messageBody = Encoding.UTF8.GetBytes(message); //Rabbitmq da mesajlar byte olarak gönderilir.
 
-//İlk parametre exchange kullanmadığımız için default exchange olarak geçer.
-//İkinci parametre routing key olarak kuyruk ismi verilir. 
-//Üçüncü parametre olarak basic propertyleri null geçtik.
-//Dördüncü parametre ôlarak byte dizisi olarak body'yi veririz.
-channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+    //İlk parametre exchange kullanmadığımız için default exchange olarak geçer.
+    //İkinci parametre routing key olarak kuyruk ismi verilir. 
+    //Üçüncü parametre olarak basic propertyleri null geçtik.
+    //Dördüncü parametre ôlarak byte dizisi olarak body'yi veririz.
+    channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
 
-Console.WriteLine("Mesaj gönderilmiştir.");
+    Console.WriteLine($"Mesaj gönderilmiştir.: {message}");
+});
+
+
 
 Console.ReadLine();
